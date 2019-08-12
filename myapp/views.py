@@ -156,4 +156,57 @@ connection − E-mail backend.
 html_message − (new in Django 1.7) if present, the e-mail will be multipart/alternative.
 
 '''
+from django.core.mail import send_mass_mail
+#from django.http import HttpResponse
+
+def sendMassEmail(request,emailto):
+   msg1 = ('subject 1', 'message 1', 'polo@polo.com', [emailto1])
+   msg2 = ('subject 2', 'message 2', 'polo@polo.com', [emailto2])
+   res = send_mass_mail((msg1, msg2), fail_silently = False)
+   return HttpResponse('%s'%res)
+
+'''
+datatuples − A tuple where each element is like (subject, message, from_email, recipient_list).
+
+fail_silently − Bool, if false send_mail will raise an exception in case of error.
+
+auth_user − User login if not set in settings.py.
+
+auth_password − User password if not set in settings.py.
+
+connection − E-mail backend.
+
+In this example we are using Python smtp debuggingserver, that you can launch using −
+
+$python -m smtpd -n -c DebuggingServer localhost:1025
+This means all your sent e-mails will be printed on stdout, and the dummy server is running on localhost:1025.
+
+
+'''
+
+def static(request):
+    return render(request, 'static.html', {})
+ 
+from django.views.generic import TemplateView
+
+class StaticView(TemplateView):
+   template_name = "static.html"
+
+from myapp.forms import LoginForm
+
+def login(request):
+    username = "not logged in"
+      
+    if request.method == "POST":
+         #Get the posted form
+        MyLoginForm = LoginForm(request.POST)
+         
+        if MyLoginForm.is_valid():
+            username = MyLoginForm.cleaned_data['username']
+    else:
+         MyLoginForm = LoginForm()
+           
+    return render(request, 'loggedin.html', {"username" : username})
+
+
 
